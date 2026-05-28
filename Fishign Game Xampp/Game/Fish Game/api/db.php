@@ -44,4 +44,22 @@ try {
     // The script will stop execution (die) and display the error message.
     die("Database connection failed: " . $e->getMessage());
 }
+
+// --- Dynamic Serverless Session Persistence (for Vercel support) ---
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user']) && isset($_COOKIE['auth_user_id'])) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$_COOKIE['auth_user_id']]);
+        $cookieUser = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($cookieUser) {
+            $_SESSION['user'] = $cookieUser;
+        }
+    } catch (PDOException $e) {
+        // Suppress session recovery DB errors to avoid crashing during connection issues
+    }
+}
 ?>

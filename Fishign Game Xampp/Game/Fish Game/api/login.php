@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Store the user data in the session variable so they stay logged in
             $_SESSION['user'] = $user;
             
+            // Set persistent auth cookie for Vercel dynamic container session recovery
+            setcookie('auth_user_id', $user['id'], time() + 86400 * 30, '/', '', true, true);
+            
             // Redirect the user to the dashboard
             header("Location: dashboard.php");
             exit; // Always exit after a header redirect
