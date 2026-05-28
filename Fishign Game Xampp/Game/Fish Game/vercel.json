@@ -1,11 +1,14 @@
 {
   "functions": {
-    "*.php": {
+    "api/*.php": {
       "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
-    { "src": "/", "dest": "/index.php" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/images/(.*)", "dest": "/images/$1" },
+    { "src": "/style.css", "dest": "/style.css" },
+    { "src": "/game_config.js", "dest": "/game_config.js" },
+    { "src": "/(.*).php", "dest": "/api/$1.php" },
+    { "src": "/", "dest": "/api/index.php" }
   ]
 }
