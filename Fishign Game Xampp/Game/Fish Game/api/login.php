@@ -2,9 +2,9 @@
 // Include database connection configuration
 require 'db.php';
 
-// Start a new session or resume the existing one
-// This is crucial for tracking the logged-in user across pages
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $successMessage = '';
 
