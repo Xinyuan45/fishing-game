@@ -2,6 +2,7 @@
 // Database Configuration
 // These variables store the connection details for the MySQL database.
 $host = getenv('DB_HOST') ?: 'localhost';        // Database host (usually 'localhost' for local development like XAMPP)
+$port = getenv('DB_PORT') ?: '3306';             // Database port (defaults to 3306 for XAMPP)
 $dbname = getenv('DB_NAME') ?: 'fish_test';      // The name of the database we are connecting to
 $username = getenv('DB_USER') ?: 'root';         // Default database username for XAMPP is 'root'
 $password = getenv('DB_PASS') ?: '';             // Default XAMPP password is empty string (if you set a password, enter it here)
@@ -11,8 +12,8 @@ $api_base_url = getenv('SPRING_BOOT_API_URL') ?: 'http://localhost:8080';
 
 try {
     // Establish a new PDO (PHP Data Objects) connection to the database
-    // DSN (Data Source Name) includes host, database name, and character set (utf8mb4 for full Unicode support)
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    // DSN (Data Source Name) includes host, port, database name, and character set (utf8mb4 for full Unicode support)
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
     
     // Set the Error Mode to Exception
     // This ensures that any database errors throw a PDOException, which we can catch and handle gracefully.
