@@ -4,8 +4,13 @@ require 'db.php';
 try {
     echo "<h1>🔄 Resetting Database...</h1>";
     
-    // Disable Foreign Key Checks to allow dropping tables in any order
+    // Disable Foreign Key Checks and Primary Key Requirement to allow rebuilds on cloud databases
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+    try {
+        $pdo->exec("SET SESSION sql_require_primary_key = 0");
+    } catch (PDOException $e) {
+        // Ignore if user lacks permissions or variable is unsupported
+    }
     
     $tables = [
         'user_baits', 'user_rods', 'user_maps', 'user_stats', 'user_discoveries',
