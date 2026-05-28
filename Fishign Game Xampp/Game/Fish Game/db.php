@@ -1,10 +1,13 @@
 <?php
 // Database Configuration
 // These variables store the connection details for the MySQL database.
-$host = 'localhost';        // Database host (usually 'localhost' for local development like XAMPP)
-$dbname = 'fish_test';      // The name of the database we are connecting to
-$username = 'root';         // Default database username for XAMPP is 'root'
-$password = '';             // Default XAMPP password is empty string (if you set a password, enter it here)
+$host = getenv('DB_HOST') ?: 'localhost';        // Database host (usually 'localhost' for local development like XAMPP)
+$dbname = getenv('DB_NAME') ?: 'fish_test';      // The name of the database we are connecting to
+$username = getenv('DB_USER') ?: 'root';         // Default database username for XAMPP is 'root'
+$password = getenv('DB_PASS') ?: '';             // Default XAMPP password is empty string (if you set a password, enter it here)
+
+// Spring Boot API base URL (overridable via environment variable for Vercel cloud deployment)
+$api_base_url = getenv('SPRING_BOOT_API_URL') ?: 'http://localhost:8080';
 
 try {
     // Establish a new PDO (PHP Data Objects) connection to the database

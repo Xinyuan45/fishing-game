@@ -107,9 +107,8 @@ if ($useCustomFish && $selectedCustomFish) {
         'image' => $selectedCustomFish['image']
     ];
 } else {
-    // --- Use Game Engine API (Fallback) ---
-    // Call Java API with luck and location
-    $api_url = "http://localhost:8080/api/fish?luck=" . $totalLuck . "&location=" . urlencode($mapName);
+    // Call Java API with luck and location (dynamically resolved URL)
+    $api_url = $api_base_url . "/api/fish?luck=" . $totalLuck . "&location=" . urlencode($mapName);
     $response = @file_get_contents($api_url);
 
     if ($response === FALSE) {

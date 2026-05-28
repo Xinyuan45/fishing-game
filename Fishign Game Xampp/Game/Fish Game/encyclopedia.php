@@ -16,7 +16,7 @@ $maps = $pdo->query("SELECT * FROM maps ORDER BY id ASC")->fetchAll(PDO::FETCH_A
 // 2. Mock/Fetch Fish Data for UI
 // In a real scenario, this might come from a Java API, but here we process the response 
 // or fall back to an empty array.
-$api_url = "http://localhost:8080/api/fish/all"; // Example Internal API URL
+$api_url = $api_base_url . "/api/fish/all"; // Example Internal API URL
 $response = @file_get_contents($api_url);       // @ suppresses warnings if API is down
 $allFishData = $response ? json_decode($response, true) : [];
 

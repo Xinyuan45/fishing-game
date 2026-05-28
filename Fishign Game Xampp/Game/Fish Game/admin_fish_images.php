@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // --- Sync with External API ---
 // This block ensures the local `fish_types` table is up-to-date with the Game Engine API.
 // It fetches all fish, checks if they exist locally, and inserts missing ones with default values.
-$api_url = "http://localhost:8080/api/fish/all";
+$api_url = $api_base_url . "/api/fish/all";
 $response = @file_get_contents($api_url);
 $allFishData = $response ? json_decode($response, true) : [];
 

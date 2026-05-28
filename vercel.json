@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "Fishign Game Xampp/Game/Fish Game/api/**/*.php": {
+      "runtime": "vercel-php@0.7.2"
+    },
+    "Fishign Game Xampp/Game/Fish Game/*.php": {
+      "runtime": "vercel-php@0.7.2"
+    }
+  },
+  "routes": [
+    { "src": "/images/(.*)", "dest": "/Fishign Game Xampp/Game/Fish Game/images/$1" },
+    { "src": "/style.css", "dest": "/Fishign Game Xampp/Game/Fish Game/style.css" },
+    { "src": "/game_config.js", "dest": "/Fishign Game Xampp/Game/Fish Game/game_config.js" },
+    { "src": "/(.*)", "dest": "/Fishign Game Xampp/Game/Fish Game/$1" }
+  ]
+}
