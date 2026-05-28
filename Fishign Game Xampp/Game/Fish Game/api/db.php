@@ -1,4 +1,9 @@
 <?php
+// Start Session immediately if not already active to ensure superglobals are initialized
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Database Configuration
 // These variables store the connection details for the MySQL database.
 $host = getenv('DB_HOST') ?: 'localhost';        // Database host (usually 'localhost' for local development like XAMPP)
@@ -46,10 +51,6 @@ try {
 }
 
 // --- Dynamic Serverless Session Persistence (for Vercel support) ---
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 if (!isset($_SESSION['user']) && isset($_COOKIE['auth_user_id'])) {
     try {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
@@ -61,5 +62,13 @@ if (!isset($_SESSION['user']) && isset($_COOKIE['auth_user_id'])) {
     } catch (PDOException $e) {
         // Suppress session recovery DB errors to avoid crashing during connection issues
     }
+}
+
+// Restore game session data if lost due to stateless/ephemeral serverless containers on Vercel
+if (!isset($_SESSION['pending_fish']) && isset($_COOKIE['pending_fish'])) {
+    $_SESSION['pending_fish'] = json_decode($_COOKIE['pending_fish'], true);
+}
+if (!isset($_SESSION['used_bait_id']) && isset($_COOKIE['used_bait_id'])) {
+    $_SESSION['used_bait_id'] = $_COOKIE['used_bait_id'];
 }
 ?>

@@ -1134,7 +1134,9 @@ $(document).ready(function () {
             data: { success: success }, // Send boolean success/fail
             success: function (data) {
                 // Show Result Message
-                $("#result").html(`<div class="alert alert-${data.success ? 'success' : 'warning'}">${data.message}</div>`);
+                let msg = data.message || data.error || "An unknown error occurred.";
+                let isSuccess = data.success === true;
+                $("#result").html(`<div class="alert alert-${isSuccess ? 'success' : 'warning'}">${msg}</div>`);
                 $("#fishButton").prop("disabled", false);
                 
                 // Update Badge if leveled up

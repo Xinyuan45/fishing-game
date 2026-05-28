@@ -10,6 +10,10 @@ $user = $_SESSION['user'];
 $pendingFish = $_SESSION['pending_fish'];
 $success = filter_var($_POST['success'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
+// Clear active fishing state cookies immediately to prevent replay/reuse
+setcookie('pending_fish', '', time() - 3600, '/');
+setcookie('used_bait_id', '', time() - 3600, '/');
+
 if (!$success) {
     // --- Minigame Failed ---
     // User lost the minigame. The fish escapes and the bait is consumed.

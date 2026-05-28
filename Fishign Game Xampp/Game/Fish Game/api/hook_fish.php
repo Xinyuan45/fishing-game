@@ -63,6 +63,7 @@ if ($baitQuantity <= 0) {
 // We only verify it exists. Consumption happens on "Catch" (catch_fish.php).
 // Store ID to track which bait to subtract later.
 $_SESSION['used_bait_id'] = $baitId;
+setcookie('used_bait_id', $baitId, time() + 300, '/');
 
 // 2. Calculate Catch Luck
 // Total Luck = Rod Multiplier * Bait Multiplier
@@ -171,6 +172,7 @@ $_SESSION['pending_fish'] = [
     'bait_bonus' => floatval($baitData['rarity_boost']),
     'image' => $fishImage
 ];
+setcookie('pending_fish', json_encode($_SESSION['pending_fish']), time() + 300, '/');
 
 // Return fish data and minigame parameters
 echo json_encode([
