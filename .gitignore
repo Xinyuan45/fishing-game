@@ -1,0 +1,19 @@
+# Exclude massive zip files
+*.zip
+
+# Java build and target outputs
+**/target/
+**/.mvn/wrapper/
+**/mvnw
+**/mvnw.cmd
+
+# IDE and OS configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+Thumbs.db
+ehthumbs.db
+Desktop.ini
