@@ -48,12 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Generate Verification Token
             $verificationToken = bin2hex(random_bytes(32));
+            $isVerified = getenv('VERCEL') ? 1 : 0; // Auto-verify on Vercel for instant demo access
             
             // Prepare the SQL statement
-            $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, coins, verification_token, is_verified) VALUES (?, ?, ?, 200, ?, 0)");
+            $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash, coins, verification_token, is_verified) VALUES (?, ?, ?, 200, ?, ?)");
             try {
                 // Execute the insert
-                $stmt->execute([$username, $email, $passwordHash, $verificationToken]);
+                $stmt->execute([$username, $email, $passwordHash, $verificationToken, $isVerified]);
                 
                 $newUserId = $pdo->lastInsertId();
                 
@@ -92,25 +93,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 @mail($email, $subject, $message, $headers);
 
                 // --- LOCAL DEBUG: Log Email to File ---
-                // Since actual email sending fails on localhost without SMTP, we save it to a file.
-                $logContent = "
-                <html>
-                <head><title>Last Sent Email</title></head>
-                <body style='font-family: sans-serif; padding: 20px;'>
-                    <h2>[Debug] Email Sent To: $email</h2>
-                    <hr>
-                    <p><strong>Subject:</strong> $subject</p>
-                    <pre style='background: #f4f4f4; padding: 15px; border-radius: 5px;'>$message</pre>
-                    <hr>
-                    <p><a href='$verifyLink' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Verify Account</a></p>
-                </body>
-                </html>";
-                file_put_contents('last_email.html', $logContent);
+                // Only save to file when not on Vercel's read-only serverless filesystem.
+                if (!getenv('VERCEL')) {
+                    $logContent = "
+                    <html>
+                    <head><title>Last Sent Email</title></head>
+                    <body style='font-family: sans-serif; padding: 20px;'>
+                        <h2>[Debug] Email Sent To: $email</h2>
+                        <hr>
+                        <p><strong>Subject:</strong> $subject</p>
+                        <pre style='background: #f4f4f4; padding: 15px; border-radius: 5px;'>$message</pre>
+                        <hr>
+                        <p><a href='$verifyLink' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Verify Account</a></p>
+                    </body>
+                    </html>";
+                    @file_put_contents('last_email.html', $logContent);
+                }
 
                 // Show Success Message
-                $successMessage = "Registration successful! <br>A verification email has been sent to <strong>$email</strong>.<br><br>
-                <strong>⚠️ LOCALHOST NOTICE:</strong><br>
-                If you don't receive the email (common on XAMPP), check the file <strong><a href='last_email.html' target='_blank'>last_email.html</a></strong> in your project folder to see the email and click the link.";
+                if (getenv('VERCEL')) {
+                    $successMessage = "✨ Registration successful! <br>Your account has been <strong>automatically verified</strong> for this live cloud deployment! You can now <a href='login.php' class='alert-link'>log in here</a> and start playing.";
+                } else {
+                    $successMessage = "Registration successful! <br>A verification email has been sent to <strong>$email</strong>.<br><br>
+                    <strong>⚠️ LOCALHOST NOTICE:</strong><br>
+                    If you don't receive the email (common on XAMPP), check the file <strong><a href='last_email.html' target='_blank'>last_email.html</a></strong> in your project folder to see the email and click the link.";
+                }
             } catch (PDOException $e) {
                 if (strpos($e->getMessage(), 'username') !== false) {
                     $error = "Username already exists!";
